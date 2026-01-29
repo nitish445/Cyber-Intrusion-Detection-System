@@ -1,11 +1,47 @@
 date,day,user,login_time,logout_time,files_accessed,usb_inserted,failed_logins,data_download_mb,working_hours,content,size,to,is_malicious
-2025-01-01,2025-01-01,U001,09:05,17:10,12,0,0,45,8,"Checked emails and updated documentation",120,john@company.com,0
-2025-01-01,2025-01-01,U002,08:55,18:30,87,1,3,950,9,"Copied confidential files to external USB",2048,external@gmail.com,1
-2025-01-02,2025-01-02,U001,09:10,16:50,15,0,1,60,7,"Routine code review and git commits",300,team@company.com,0
-2025-01-02,2025-01-02,U003,10:30,19:45,120,1,5,1200,9,"Executed bulk database export via shell",4096,unknown@outside.com,1
-2025-01-03,2025-01-03,U002,09:00,17:00,10,0,0,30,8,"Team meetings and Jira updates",150,manager@company.com,0
-2025-01-03,2025-01-03,U004,08:40,20:10,95,1,4,870,11,"Accessed restricted folders after hours",3072,dropbox.com,1
-2025-01-04,2025-01-04,U003,09:15,17:05,18,0,0,55,8,"Normal testing and deployment tasks",220,dev@company.com,0
-2025-01-04,2025-01-04,U005,11:00,22:30,140,1,6,1500,11,"Large encrypted data dump detected",8192,mega.nz,1
-2025-01-05,2025-01-05,U004,09:20,17:00,20,0,1,70,8,"Reviewed system logs",180,security@company.com,0
-2025-01-05,2025-01-05,U006,08:30,21:00,110,1,5,980,12,"Unauthorized script execution observed",5120,anonymous@proton.me,1
+2025-02-11,2025-02-11,U101,09:00,17:10,14,0,0,52,8,"Routine email and documentation tasks",180,team@company.com,0
+2025-02-11,2025-02-11,U102,07:40,21:15,140,1,4,1600,13,"Unauthorized financial file upload to cloud",8200,drive.google.com,1
+2025-02-12,2025-02-12,U103,08:55,17:00,18,0,1,60,8,"Sprint planning and internal reporting",220,manager@company.com,0
+2025-02-12,2025-02-12,U104,06:30,22:00,165,1,6,1950,14,"Bulk HR confidential data extraction detected",8800,dropbox.com,1
+2025-02-13,2025-02-13,U105,09:05,17:15,40,1,2,210,8,"GNN flagged cross-server access but audit approved",520,audit@company.com,0
+2025-02-13,2025-02-13,U106,07:10,23:10,180,1,8,2450,16,"Large encrypted outbound traffic anomaly",9100,mega.nz,1
+2025-02-14,2025-02-14,U107,09:00,17:00,16,0,0,58,8,"Code review and Git repository updates",200,dev@company.com,0
+2025-02-14,2025-02-14,U108,05:50,20:45,155,1,5,1850,14,"Unauthorized database replication attempt",8700,unknown@external.com,1
+2025-02-15,2025-02-15,U109,08:45,17:05,22,0,0,72,8,"QA testing and bug report updates",240,qa@company.com,0
+2025-02-15,2025-02-15,U110,06:10,21:40,165,1,7,2200,15,"Source code exfiltration to GitHub mirror",9600,githubusercontent.com,1
+2025-02-16,2025-02-16,U111,09:10,17:10,19,0,1,65,8,"Routine server maintenance",210,it@company.com,0
+2025-02-16,2025-02-16,U112,07:00,22:20,175,1,6,2350,15,"Credential harvesting and privilege escalation",9300,unknown@hacker.com,1
+2025-02-17,2025-02-17,U113,08:50,17:00,17,0,0,55,8,"Team meetings and documentation",190,team@company.com,0
+2025-02-17,2025-02-17,U114,06:20,21:30,160,1,5,2100,15,"Mass customer PII extraction detected",9000,unknown@external.com,1
+2025-02-18,2025-02-18,U115,09:05,17:05,42,1,1,230,8,"GNN flagged access spike but vendor sync approved",560,vendor@company.com,0
+2025-02-18,2025-02-18,U116,05:40,20:10,150,1,6,1900,14,"Encrypted VPN tunneling attempt",8800,unknown@vpnmail.com,1
+2025-02-19,2025-02-19,U117,09:00,17:00,28,0,2,95,8,"Routine compliance audit and reporting",250,legal@company.com,0
+2025-02-19,2025-02-19,U118,07:10,22:50,180,1,9,2550,16,"Unauthorized system log deletion activity",9900,anonymous@proton.me,1
+2025-02-20,2025-02-20,U119,09:10,17:10,20,0,0,68,8,"Performance optimization and monitoring",230,dev@company.com,0
+2025-02-20,2025-02-20,U120,06:00,21:00,170,1,7,2300,15,"Large customer data dump detected",10400,unknown@external.com,1
+2025-02-21,2025-02-21,U121,08:45,17:05,35,0,1,180,8,"LSTM flagged fast task switching but approved",520,manager@company.com,0
+2025-02-21,2025-02-21,U122,06:20,23:10,190,1,8,2600,17,"Unauthorized encrypted archive upload to dark web",11200,unknown@darkmail.com,1
+2025-02-22,2025-02-22,U123,09:00,17:00,22,0,0,75,8,"Routine reporting and sprint planning",210,team@company.com,0
+2025-02-22,2025-02-22,U124,07:30,21:40,165,1,6,2200,14,"Unauthorized cloud data replication",8900,dropbox.com,1
+2025-02-23,2025-02-23,U125,09:05,17:15,30,0,0,120,8,"Normal deployment verification",260,it@company.com,0
+2025-02-23,2025-02-23,U126,05:50,20:30,155,1,5,1950,14,"Mass export of confidential finance records",8800,unknown@external.com,1
+2025-02-24,2025-02-24,U127,08:50,17:00,38,1,1,210,8,"Graph model flagged unusual access but audit cleared",580,audit@company.com,0
+2025-02-24,2025-02-24,U128,06:40,22:20,175,1,7,2350,16,"Unauthorized data transfer via removable USB",9200,external@gmail.com,1
+2025-02-25,2025-02-25,U129,09:10,17:10,24,0,0,88,8,"Routine internal communications",220,hr@company.com,0
+2025-02-25,2025-02-25,U130,07:20,23:00,185,1,8,2550,16,"Suspicious outbound encrypted traffic anomaly",9000,mega.nz,1
+2025-02-26,2025-02-26,U131,08:45,17:00,41,1,2,230,8,"Both GNN and LSTM flagged but verified safe integration",600,vendor@company.com,0
+2025-02-26,2025-02-26,U132,06:10,21:40,165,1,6,2100,15,"Credential brute-force and lateral movement detected",9100,unknown@hacker.com,1
+2025-02-27,2025-02-27,U133,09:05,17:05,19,0,0,65,8,"Routine system health monitoring",200,it@company.com,0
+2025-02-27,2025-02-27,U134,05:30,20:10,160,1,5,1950,14,"Unauthorized database cloning detected",8700,unknown@external.com,1
+2025-02-28,2025-02-28,U135,09:00,17:10,26,0,1,98,8,"Routine documentation updates",240,team@company.com,0
+2025-02-28,2025-02-28,U136,06:50,22:45,180,1,7,2400,16,"Bulk export of employee salary records",9500,dropbox.com,1
+2025-03-01,2025-03-01,U137,08:55,17:05,34,0,0,140,8,"Normal analytics dashboard updates",280,analytics@company.com,0
+2025-03-01,2025-03-01,U138,06:20,23:00,190,1,9,2700,17,"Unauthorized encrypted storage upload",11250,unknown@darkmail.com,1
+2025-03-02,2025-03-02,U139,09:00,17:00,25,0,0,88,8,"Routine team coordination and reporting",210,team@company.com,0
+2025-03-02,2025-03-02,U140,07:10,22:40,175,1,6,2300,16,"Mass deletion of audit and security logs",9800,anonymous@proton.me,1
+2025-03-03,2025-03-03,U141,09:05,17:15,36,1,1,210,8,"Graph risk elevated but cleared after security review",620,security@company.com,0
+2025-03-03,2025-03-03,U142,05:50,20:30,160,1,5,2000,14,"Unauthorized outbound VPN tunnel detected",8900,unknown@vpnmail.com,1
+2025-03-04,2025-03-04,U143,09:00,17:10,29,0,0,100,8,"Normal internal testing and QA",230,qa@company.com,0
+2025-03-04,2025-03-04,U144,06:00,22:15,180,1,7,2400,16,"Attempted ransomware staging via shared drives",9600,unknown@external.com,1
+2025-03-05,2025-03-05,U145,09:05,17:00,33,0,1,135,8,"LSTM flagged workload spike but manager approved",500,manager@company.com,0
+2025-03-05,2025-03-05,U146,06:40,23:20,195,1,9,2750,17,"Unauthorized bulk source repository mirror created",11500,githubusercontent.com,1
