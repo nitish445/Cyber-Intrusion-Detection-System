@@ -20,7 +20,6 @@ for i, chunk in enumerate(pd.read_csv(INPUT_FILE, chunksize=CHUNK_SIZE)):
     chunk = chunk.dropna(subset=["date"])
     chunk["day"] = chunk["date"].dt.date
 
-    # Feature engineering
     chunk["content_len"] = chunk["content"].fillna("").astype(str).str.len()
     chunk["has_attach"] = 0
 

@@ -5,15 +5,14 @@ import torch.nn as nn
 from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 
-# 1. LOAD PROCESSED DATA
+#LOAD PROCESSED DATA
 print("📥 Loading processed data...")
 df = pd.read_csv("processed/user_daily.csv")
 
-# Sort properly (VERY IMPORTANT)
 df["day"] = pd.to_datetime(df["day"])
 df = df.sort_values(["user", "day"])
 
-# 2. SELECT FEATURES
+# FEATURES
 features = [
     "emails_sent",
     "unique_receivers",
@@ -22,13 +21,12 @@ features = [
     "avg_content_len"
 ]
 
-# 3. SCALE FEATURES
 print("📏 Scaling features...")
 scaler = StandardScaler()
 df[features] = scaler.fit_transform(df[features])
 
-# 4. CREATE SEQUENCES
-SEQ_LEN = 7   # 7 days behaviour window
+#SEQUENCES
+SEQ_LEN = 7
 sequences = []
 
 print("⏳ Creating sequences...")
@@ -45,10 +43,9 @@ for user in tqdm(df["user"].unique()):
 X = np.array(sequences)
 print("✅ Total sequences:", X.shape)
 
-# 5. CONVERT TO TORCH
 X_tensor = torch.tensor(X, dtype=torch.float32)
 
-# 6. DEFINE LSTM AUTOENCODER
+# DEFINE LSTM AUTOENCODER
 class LSTMAutoencoder(nn.Module):
     def __init__(self, input_dim, hidden_dim=64):
         super().__init__()
@@ -63,7 +60,7 @@ class LSTMAutoencoder(nn.Module):
 
 model = LSTMAutoencoder(input_dim=X.shape[2])
 
-# 7. TRAIN LSTM
+#TRAIN LSTM
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 loss_fn = nn.MSELoss()
 
@@ -87,11 +84,10 @@ for epoch in range(EPOCHS):
 
     print(f"Epoch {epoch+1}/{EPOCHS} | Loss: {epoch_loss:.4f}")
 
-# 8. SAVE MODEL
+#SAVE MODEL
 torch.save(model.state_dict(), "models/lstm_autoencoder.pth")
 print("💾 LSTM model saved to models/lstm_autoencoder.pth")
 
-# 9. ANOMALY DETECTION
 print("🚨 Detecting anomalies using reconstruction error...")
 
 model.eval()
@@ -101,20 +97,16 @@ with torch.no_grad():
 # Mean Squared Error per sequence
 recon_error = ((reconstructed - X_tensor) ** 2).mean(dim=(1, 2))
 
-# Convert to numpy
 recon_error_np = recon_error.numpy()
 
-# Threshold (statistical)
 threshold = recon_error_np.mean() + 2 * recon_error_np.std()
 
 print(f"📏 Anomaly threshold: {threshold:.4f}")
 
-# Flag anomalies
 anomaly_flags = (recon_error_np > threshold).astype(int)
 
 print(f"🚨 Total anomalies detected: {anomaly_flags.sum()}")
 
-# 10. SAVE ANOMALY SCORES
 anomaly_df = pd.DataFrame({
     "reconstruction_error": recon_error_np,
     "anomaly": anomaly_flags

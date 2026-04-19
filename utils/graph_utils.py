@@ -25,7 +25,7 @@ def build_user_graph(user_daily_path, anomaly_path):
     users = user_df["user"].unique()
     node_map = {u: i for i, u in enumerate(users)}
 
-    # SELF-LOOP GRAPH (FAST & SAFE)
+    # SELF LOOP GRAPH
     edges = []
     for u in users:
         idx = node_map[u]
@@ -33,7 +33,6 @@ def build_user_graph(user_daily_path, anomaly_path):
 
     edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
 
-    # Node features
     x = torch.ones((len(users), 1))
 
     # Labels based on anomaly ratio

@@ -1,7 +1,6 @@
 import os
 import sys
 
-# FIX IMPORT PATH (THIS IS WHAT YOU COULDN’T FIND)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import torch
@@ -10,7 +9,6 @@ from torch_geometric.nn import GCNConv
 
 from utils.graph_utils import build_user_graph
 
-# 1. BUILD GRAPH  (THIS CREATES `data`)
 print("📡 Building graph...", flush=True)
 
 data = build_user_graph(
@@ -20,7 +18,7 @@ data = build_user_graph(
 
 print("📦 Graph ready", flush=True)
 
-# 2. DEFINE GNN MODEL
+#DEFINE GNN MODEL
 class GNN(nn.Module):
     def __init__(self):
         super().__init__()
@@ -35,11 +33,11 @@ class GNN(nn.Module):
 
 model = GNN()
 
-# 3. TRAINING SETUP
+#TRAINING SETUP
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 loss_fn = nn.CrossEntropyLoss()
 
-# 4. TRAIN GNN
+#GNN
 print("🚀 Training GNN...", flush=True)
 
 for epoch in range(50):
@@ -54,7 +52,7 @@ for epoch in range(50):
 
     print(f"Epoch {epoch} | Loss: {loss.item():.4f}")
 
-# 5. SAVE MODEL
+#SAVE MODEL
 os.makedirs("models", exist_ok=True)
 torch.save(model.state_dict(), "models/gnn_model.pth")
 

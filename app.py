@@ -6,15 +6,15 @@ from sklearn.preprocessing import MinMaxScaler
 
 #PAGE CONFIG
 st.set_page_config(
-    page_title="Cyber Intrusion Detection System",
+    page_title="Insider Threat Detection",
     page_icon="🛡️",
     layout="wide"
 )
 
 
 dashboard, tab1, tab2, tab3 = st.tabs([
+    "Explanation",
     "Dashboard",
-    "Main IDS Dashboard",
     "Model Comparison (Ablation Study)",
     "Fusion Weight Sensitivity"
 ])
@@ -112,7 +112,7 @@ This limitation motivates the use of a second model.
 
 ---
 
-## 8. Why We Used a Graph Neural Network (GNN)
+## 8. Why We Used a Graph Neural Network (GRR)
 
 A Graph Neural Network is used to perform user-level classification.
 
@@ -120,7 +120,7 @@ A Graph Neural Network is used to perform user-level classification.
 - Anomaly information from LSTM is aggregated per user
 - Self-loops preserve user-specific behavior
 
-The GNN refines temporal anomalies into **consistent user-level classifications**.
+The GRR refines temporal anomalies into **consistent user-level classifications**.
 
 ---
 
@@ -132,7 +132,7 @@ The variable `is_malicious` is **not an input feature**.
 It is the **output of the system**, inferred as follows:
 1. LSTM detects anomalous behavior
 2. Anomaly ratios are computed per user
-3. GNN classifies users as normal or suspicious
+3. GRR classifies users as normal or suspicious
 
 This makes the system fully unsupervised.
 
@@ -235,20 +235,20 @@ with tab1:
     X_mean = X.mean(axis=0)
     daily["lstm_score"] = np.mean((X - X_mean) ** 2, axis=1)
 
-    #GNN SCORE
+    #GRR SCORE
     dest_freq = df.groupby("to").size()
     df["dest_risk"] = df["to"].map(dest_freq) * (df["size"] + 1)
 
-    gnn_daily = df.groupby(["user", "day"])["dest_risk"].mean().reset_index()
-    daily = daily.merge(gnn_daily, on=["user", "day"], how="left")
+    GRR_daily = df.groupby(["user", "day"])["dest_risk"].mean().reset_index()
+    daily = daily.merge(GRR_daily, on=["user", "day"], how="left")
 
-    daily["gnn_score"] = MinMaxScaler().fit_transform(
+    daily["GRR_score"] = MinMaxScaler().fit_transform(
         daily[["dest_risk"]].fillna(0)
     )
 
     #FUSION
     alpha = 0.6
-    daily["final_score"] = alpha * daily["lstm_score"] + (1 - alpha) * daily["gnn_score"]
+    daily["final_score"] = alpha * daily["lstm_score"] + (1 - alpha) * daily["GRR_score"]
 
     threshold = np.percentile(daily["final_score"], 70)
     daily["is_malicious"] = daily["final_score"] > threshold
@@ -259,12 +259,12 @@ with tab1:
             return "Final score below anomaly threshold"
 
         lstm_contrib = alpha * row["lstm_score"]
-        gnn_contrib = (1 - alpha) * row["gnn_score"]
+        GRR_contrib = (1 - alpha) * row["GRR_score"]
 
-        if lstm_contrib >= gnn_contrib:
+        if lstm_contrib >= GRR_contrib:
             return "Primary cause: Temporal behavior deviation (LSTM)"
         else:
-            return "Primary cause: Relational / network risk (GNN)"
+            return "Primary cause: Relational / network risk (GRR)"
 
     daily["decision"] = daily["is_malicious"].apply(
         lambda x: "🚨 Malicious" if x else "✅ Normal"
@@ -303,7 +303,7 @@ with tab1:
     )
 
 
-    # LSTM, GNN, and Hybrid Score Explanation
+    # LSTM, GRR, and Hybrid Score Explanation
 
     st.markdown("---")
     st.subheader("How the Final Detection Score is Calculated")
@@ -339,37 +339,37 @@ with tab1:
     """)
 
 
-    # 2️ GNN VALUE
+    # 2️ GRR VALUE
 
     st.markdown("---")
-    st.markdown("### 2. Graph Neural Network (GNN) Value")
+    st.markdown("### 2. Graph Neural Network (GRR) Value")
 
     st.markdown("""
-    The GNN performs **user-level classification** using anomaly information from the LSTM.
+    The GRR performs **user-level classification** using anomaly information from the LSTM.
     """)
 
-    # GNN score already computed earlier
-    gnn_scores = (
-        daily.groupby("user")["gnn_score"]
+    # GRR score already computed earlier
+    GRR_scores = (
+        daily.groupby("user")["GRR_score"]
         .mean()
         .reset_index()
-        .rename(columns={"gnn_score": "GNN_Value"})
+        .rename(columns={"GRR_score": "GRR_Value"})
     )
 
 
-    st.write("**GNN Value = Probability of User Being Suspicious**")
-    #st.dataframe(gnn_scores)
+    st.write("**GRR Value = Probability of User Being Suspicious**")
+    #st.dataframe(GRR_scores)
 
     st.markdown("""
     - Value close to **0** → Normal user  
     - Value close to **1** → Suspicious user
     """)
-    st.subheader("GNN Score Calculation")
+    st.subheader("GRR Score Calculation")
 
     st.markdown("""
-    ### What the GNN Score Represents
+    ### What the GRR Score Represents
 
-    The GNN score captures **relational communication risk** based on:
+    The GRR score captures **relational communication risk** based on:
     - Email destinations
     - Communication frequency
     - Email size
@@ -401,23 +401,23 @@ with tab1:
     ### Step 3: User-Day Aggregation
 
     For each user *u* on day *d*, \nthe destination risks are aggregated:\n
-    GNN_raw(u, d) = (1 / N) × Σ dest_risk_i
+    GRR_raw(u, d) = (1 / N) × Σ dest_risk_i
 
     where *N* is the number of emails sent by the user on that day.
     """)
 
     st.markdown("""
-    ### Step 4: Normalization (Final GNN Score)
+    ### Step 4: Normalization (Final GRR Score)
 
     The raw score is normalized using Min-Max scaling:\n
-    GNN_score = (GNN_raw − min(GNN_raw)) / (max(GNN_raw) − min(GNN_raw))
+    GRR_score = (GRR_raw − min(GRR_raw)) / (max(GRR_raw) − min(GRR_raw))
 
     This ensures the score lies between **0 and 1**.
     """)
 
     st.markdown("""
-    ### Final GNN Formula (As Used in This System)\n
-    GNN_score(u, d) =
+    ### Final GRR Formula (As Used in This System)\n
+    GRR_score(u, d) =
     MinMax(
     (1 / N) × Σ [ dest_freq(to_i) × (size_i + 1) ]
     )
@@ -427,38 +427,38 @@ with tab1:
     st.markdown("""
     ### Interpretation
 
-    - **Low GNN score (≈ 0)** → Normal communication behavior  
-    - **High GNN score (≈ 1)** → High relational / network risk  
+    - **Low GRR score (≈ 0)** → Normal communication behavior  
+    - **High GRR score (≈ 1)** → High relational / network risk  
 
-    The GNN score focuses on **who the user communicates with**, not **when**.
+    The GRR score focuses on **who the user communicates with**, not **when**.
     """)
 
 
 
 
 
-    # 3️ HYBRID VALUE (LSTM + GNN)
+    # 3️ HYBRID VALUE (LSTM + GRR)
 
     st.markdown("---")
-    st.markdown("### 3. Hybrid Detection Value (LSTM + GNN)")
+    st.markdown("### 3. Hybrid Detection Value (LSTM + GRR)")
 
     st.markdown("""
     The final detection score is a **weighted combination** of:
     - Temporal anomaly score (LSTM)
-    - User-level risk score (GNN)
+    - User-level risk score (GRR)
     """)
 
     # Normalize LSTM values
     lstm_norm = (lstm_scores - lstm_scores.min()) / (lstm_scores.max() - lstm_scores.min())
 
     # Align users
-    hybrid_df = gnn_scores.copy()
+    hybrid_df = GRR_scores.copy()
     hybrid_df["LSTM_Value"] = lstm_norm.values[:len(hybrid_df)]
 
     # Hybrid score
     hybrid_df["Hybrid_Value"] = (
         0.6 * hybrid_df["LSTM_Value"] +
-        0.4 * hybrid_df["GNN_Value"]
+        0.4 * hybrid_df["GRR_Value"]
     )
 
     #st.write("**Hybrid Score Calculation:**")
@@ -466,7 +466,7 @@ with tab1:
 
     st.markdown("""
     **Hybrid Formula Used:**
-    Hybrid_Value = 0.6 × LSTM_Value + 0.4 × GNN_Value
+    Hybrid_Value = 0.6 × LSTM_Value + 0.4 × GRR_Value
 
     This ensures:
     - Temporal anomalies are prioritized
@@ -487,14 +487,14 @@ with tab1:
 
     #st.dataframe(hybrid_df[["user", "Hybrid_Value", "Final_Label"]])
 
-    st.success("Final detection scores calculated using LSTM, GNN, and Hybrid model.")
+    st.success("Final detection scores calculated using LSTM, GRR, and Hybrid model.")
 
 
     st.dataframe(
         daily[[
             "user", "day",
             "decision", "reason",
-            "lstm_score", "gnn_score", "final_score"
+            "lstm_score", "GRR_score", "final_score"
         ]],
         use_container_width=True,
         height=350
@@ -508,12 +508,12 @@ with tab1:
     st.bar_chart(daily.set_index("label")["final_score"])
 
     #GLOBAL LINE GRAPH WITH THRESHOLD
-    st.subheader("LSTM vs GNN Contribution")
+    st.subheader("LSTM vs GRR Contribution")
 
     fig, ax = plt.subplots(figsize=(10, 5))
 
     ax.plot(daily["label"], daily["lstm_score"], marker="o", label="LSTM Score")
-    ax.plot(daily["label"], daily["gnn_score"], marker="o", label="GNN Score")
+    ax.plot(daily["label"], daily["GRR_score"], marker="o", label="GRR Score")
     ax.plot(daily["label"], daily["final_score"], marker="o", label="Final Score")
 
     ax.axhline(
@@ -526,7 +526,7 @@ with tab1:
 
     ax.set_xlabel("User | Day")
     ax.set_ylabel("Score")
-    ax.set_title("Global LSTM, GNN and Final Score with Threshold")
+    ax.set_title("Global LSTM, GRR and Final Score with Threshold")
     ax.legend()
     ax.grid(True)
     plt.xticks(rotation=45, ha="right")
@@ -542,7 +542,7 @@ with tab1:
     st.dataframe(
         user_data[[
             "day", "decision", "reason",
-            "lstm_score", "gnn_score", "final_score"
+            "lstm_score", "GRR_score", "final_score"
         ]],
         use_container_width=True
     )
@@ -561,14 +561,14 @@ with tab1:
     st.subheader("Score Trend for Selected User")
 
     chart_df = user_data.set_index("day")[[
-        "lstm_score", "gnn_score", "final_score"
+        "lstm_score", "GRR_score", "final_score"
     ]]
     st.line_chart(chart_df)
 
     #VISUALS
 
-    st.subheader("LSTM vs GNN Contribution")
-    st.line_chart(daily[["lstm_score", "gnn_score", "final_score"]])
+    st.subheader("LSTM vs GRR Contribution")
+    st.line_chart(daily[["lstm_score", "GRR_score", "final_score"]])
 
     st.subheader("Feature Correlation Heatmap")
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -602,8 +602,8 @@ with tab2:
     understand the contribution of each model component.
 
     We compare:
-    - A **Hybrid model** (LSTM + GNN)
-    - A **GNN-only model**
+    - A **Hybrid model** (LSTM + GRR)
+    - A **GRR-only model**
     - A **LSTM-only model**
 
     The goal is to prove that **both temporal and relational modeling are necessary**
@@ -613,15 +613,15 @@ with tab2:
     st.markdown("""
     ###Models Explained
 
-    **1) Hybrid Model (LSTM + GNN)**  
-    `Final_full = 0.6 × LSTM + 0.4 × GNN`
+    **1) Hybrid Model (LSTM + GRR)**  
+    `Final_full = 0.6 × LSTM + 0.4 × GRR`
 
     - LSTM captures **temporal behavior deviations**
-    - GNN captures **relational / network-based risk**
+    - GRR captures **relational / network-based risk**
     - Represents the **complete IDS**
 
-    **2) GNN-only Model**  
-    `Final_gnn_only = GNN`
+    **2) GRR-only Model**  
+    `Final_GRR_only = GRR`
 
     - Detects shared destinations and coordinated behavior
     - Cannot detect abnormal behavior of an individual user
@@ -646,17 +646,17 @@ with tab2:
     """)
 
     #MODEL VARIANTS
-    daily["Final_Hybrid"] = 0.6 * daily["lstm_score"] + 0.4 * daily["gnn_score"]
-    daily["Final_GNN_Only"] = daily["gnn_score"]
+    daily["Final_Hybrid"] = 0.6 * daily["lstm_score"] + 0.4 * daily["GRR_score"]
+    daily["Final_GRR_Only"] = daily["GRR_score"]
     daily["Final_LSTM_Only"] = daily["lstm_score"]
 
     #THRESHOLDS
     th_hybrid = np.percentile(daily["Final_Hybrid"], 70)
-    th_gnn = np.percentile(daily["Final_GNN_Only"], 70)
+    th_GRR = np.percentile(daily["Final_GRR_Only"], 70)
     th_lstm = np.percentile(daily["Final_LSTM_Only"], 70)
 
     daily["Hybrid Alert"] = daily["Final_Hybrid"] > th_hybrid
-    daily["GNN Alert"] = daily["Final_GNN_Only"] > th_gnn
+    daily["GRR Alert"] = daily["Final_GRR_Only"] > th_GRR
     daily["LSTM Alert"] = daily["Final_LSTM_Only"] > th_lstm
 
     #RESULTS
@@ -665,8 +665,8 @@ with tab2:
     st.dataframe(
         daily[[
             "user", "day",
-            "Hybrid Alert", "GNN Alert", "LSTM Alert",
-            "Final_Hybrid", "Final_GNN_Only", "Final_LSTM_Only"
+            "Hybrid Alert", "GRR Alert", "LSTM Alert",
+            "Final_Hybrid", "Final_GRR_Only", "Final_LSTM_Only"
         ]],
         use_container_width=True,
         height=400
@@ -679,7 +679,7 @@ with tab2:
         daily["user"] + " | " + daily["day"].astype(str)
     )[[
         "Final_Hybrid",
-        "Final_GNN_Only",
+        "Final_GRR_Only",
         "Final_LSTM_Only"
     ]]
 
@@ -690,10 +690,10 @@ with tab2:
     ### Key Takeaway
 
     - Some anomalies are detected **only by LSTM**
-    - Some anomalies are detected **only by GNN**
+    - Some anomalies are detected **only by GRR**
     - The hybrid model detects **both**
 
-    This proves that **LSTM and GNN are complementary**, not redundant.
+    This proves that **LSTM and GRR are complementary**, not redundant.
     """)
 
     st.success("Ablation study completed successfully")
@@ -706,7 +706,7 @@ with tab3:
     st.markdown("""
     ## What is this page about?
 
-    This page studies how **changing fusion weights** between LSTM and GNN
+    This page studies how **changing fusion weights** between LSTM and GRR
     affects anomaly detection.
 
     It answers:
@@ -718,21 +718,21 @@ with tab3:
     ### Fusion Strategies Explained
 
     **A️⃣ Balanced Fusion (Baseline)**  
-    `Final_A = 0.6 × LSTM + 0.4 × GNN`
+    `Final_A = 0.6 × LSTM + 0.4 × GRR`
 
     - Balanced importance to behavior and relationships
     - Stable and interpretable
     - Used as the **default configuration**
 
-    **B️⃣ GNN-Dominant Fusion**  
-    `Final_B = 0.6 × LSTM + 1.0 × GNN`
+    **B️⃣ GRR-Dominant Fusion**  
+    `Final_B = 0.6 × LSTM + 1.0 × GRR`
 
     - Strong emphasis on network/relational risk
     - Detects coordinated insider activity
     - Can over-flag popular shared resources
 
     **C️⃣ LSTM-Dominant Fusion**  
-    `Final_C = 1.0 × LSTM + 0.4 × GNN`
+    `Final_C = 1.0 × LSTM + 0.4 × GRR`
 
     - Strong emphasis on individual behavior
     - Detects subtle behavioral drift
@@ -751,15 +751,15 @@ with tab3:
 
     #FUSION VARIANTS
     daily["Fusion_A (0.6L + 0.4G)"] = (
-        0.6 * daily["lstm_score"] + 0.4 * daily["gnn_score"]
+        0.6 * daily["lstm_score"] + 0.4 * daily["GRR_score"]
     )
 
     daily["Fusion_B (0.6L + 1.0G)"] = (
-        0.6 * daily["lstm_score"] + 1.0 * daily["gnn_score"]
+        0.6 * daily["lstm_score"] + 1.0 * daily["GRR_score"]
     )
 
     daily["Fusion_C (1.0L + 0.4G)"] = (
-        1.0 * daily["lstm_score"] + 0.4 * daily["gnn_score"]
+        1.0 * daily["lstm_score"] + 0.4 * daily["GRR_score"]
     )
 
     #THRESHOLDS
@@ -803,7 +803,7 @@ with tab3:
     st.markdown("""
     ### Key Takeaway
 
-    - Increasing **GNN weight** amplifies network-based alerts
+    - Increasing **GRR weight** amplifies network-based alerts
     - Increasing **LSTM weight** amplifies behavioral alerts
     - Balanced fusion provides the **most robust and interpretable detection**
 
