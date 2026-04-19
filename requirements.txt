@@ -4,3 +4,8 @@ scikit-learn
 torch
 torch-geometric
 tqdm
+matplotlib
+plotly
+pandas
+numpy
+streamlit
